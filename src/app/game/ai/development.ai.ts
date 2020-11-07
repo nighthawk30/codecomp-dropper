@@ -52,6 +52,6 @@ export const developmentScript = `
 function main(gameState, side)
 {
   const myTeam = gameState.teamStates[side];
-  return ['north', 'north', 'north'];
+  return ['south', 'south', 'south'];
 }
 `;
