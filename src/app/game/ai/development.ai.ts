@@ -49,8 +49,9 @@ export type Coord = [number, number];
 
 // do not include "export const developmentScript = " with your submission
 export const developmentScript = `
-function main(gameState, side) {
-    const myTeam = gameState.teamStates[side];
-    return ['none', 'none', 'none'];
-  }
+function main(gameState, side)
+{
+  const myTeam = gameState.teamStates[side];
+  return ['north', 'north', 'north'];
+}
 `;
