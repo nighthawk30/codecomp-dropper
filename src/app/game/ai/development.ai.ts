@@ -69,12 +69,8 @@ function main(gameState, side)
 
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
-      myTeam.reduce((moveSet, member) => {
-        
-        //THE CODE PER MONSTER
-
-        if (member.isDead)
-        {
+      myTeam.reduce((moveSet, member, i) => {
+        if (member.isDead) {
           moveSet.push('none');
         }
         else
@@ -104,10 +100,11 @@ function main(gameState, side)
         return moveSet;
       }, [])
     );
-    return callback();
+
+    
+    return callback();    
+    })
 }
-
-
 `;
 
 
