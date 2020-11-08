@@ -66,4 +66,4 @@ function main(gameState, side)
 
     callback();
   })
-}`
+}`;
