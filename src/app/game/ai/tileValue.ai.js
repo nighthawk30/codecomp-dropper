@@ -30,7 +30,7 @@ function main(gameState, side)
 
   
   
-  if (boardSegmented(boardLayout, midRow))//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+  if (boardSegmented(boardLayout, midRow) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
   {
     midRow--;
   }
