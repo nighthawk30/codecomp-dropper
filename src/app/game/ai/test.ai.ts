@@ -1,3 +1,4 @@
+`
 function main(gameState, side)
 {
   const myTeam = gameState.teamStates[side];
@@ -65,4 +66,4 @@ function main(gameState, side)
 
     callback();
   })
-}
+}`
