@@ -90,7 +90,7 @@ function main(gameState, side)
   }
 
   //start at middle, recusrion for value propagation
-  for (let j = colSize; j < rowSize; j++)
+  for (let j = 0; j < colSize; j++)
   {
     valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
   }
@@ -113,6 +113,7 @@ function main(gameState, side)
           let x = -9; //here
           let minValue = -9;
           let direction = 'none';
+          let move = [row, col];
 
           //Can you move in each direction and is that the best move
           if (locationExists(row + 1, col, rowSize, colSize, boardLayout)) 
@@ -122,6 +123,7 @@ function main(gameState, side)
             {
               minValue = s;
               direction = 'south';
+              move = [row + 1, col];
             }
           }
           if (locationExists(row - 1, col, rowSize, colSize, boardLayout)) 
@@ -131,6 +133,7 @@ function main(gameState, side)
             {
               minValue = n;
               direction = 'north';
+              move = [row - 1, col];
             }
           }
           if (locationExists(row, col - 1, rowSize, colSize, boardLayout)) 
@@ -140,6 +143,7 @@ function main(gameState, side)
             {
               minValue = w;
               direction = 'west';
+              move = [row, col - 1];
             }  
           }
           if (locationExists(row, col + 1, rowSize, colSize, boardLayout)) 
@@ -149,6 +153,7 @@ function main(gameState, side)
             {
               minValue = e;
               direction = 'east';
+              move = [row, col + 1];
             }
           }
           if (locationExists(row, col, rowSize, colSize, boardLayout))
@@ -158,12 +163,13 @@ function main(gameState, side)
             {
               minValue = x;
               direction = 'none';
+              move = [row, col];
             }
           }
 
           //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
           moveSet.push(direction);
-          possibleMoves.length = 0;
+          tileValue[move[0]][move[1]]--;
         }
         return moveSet;
       }, [])
