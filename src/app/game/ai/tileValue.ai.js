@@ -1,6 +1,6 @@
 //global variables
 let turn = -1;
-let midRow = Math.trunc(rowSize / 2);//Most valuable row - UPDATE: this won't be used to determine tile value in final version
+let midRow = 0;//can't do stuff in global
 
 function main(gameState, side)
 {
@@ -9,6 +9,7 @@ function main(gameState, side)
   const [rowSize, colSize] = gameState.boardSize;
   const boardLayout = gameState.tileStates;//the strength of every tile on the board
   let tileValue = [];//hopefully it works with pass by reference
+  midRow = Math.trunc(rowSize / 2);//Most valuable row - UPDATE: this won't be used to determine tile value in final version
   const possibleMoves = [];
   turn++;
 
@@ -29,11 +30,12 @@ function main(gameState, side)
   }
 
   
-  
+  /*
   if (boardSegmented(boardLayout, midRow) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
   {
     midRow--;
   }
+  */
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
   for (let j = 0; j < colSize; j++)
   {
