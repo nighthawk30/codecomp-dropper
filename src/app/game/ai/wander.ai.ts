@@ -1,9 +1,11 @@
 export const wanderScript = `//a more advanced version of wander
-function main(gameState, side) {
+function main(gameState, side)
+{
   const myTeam = gameState.teamStates[side];
   const possibleMoves = [];
   const [rowSize, colSize] = gameState.boardSize;
-  const boardLayout = gameState.tileStates;//the strength of every tile on the board
+  let boardLayout = gameState.tileStates;//the strength of every tile on the board
+  
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
       myTeam.reduce((moveSet, member) => {
@@ -14,7 +16,7 @@ function main(gameState, side) {
         else 
         {
           const [row, col] = member.coord;
-          if (row > 1 && boardLayout[row - 1][col] > 1)
+          if (row > 0 && boardLayout[row - 1][col] > 1)
           {
             possibleMoves.push('north');
           }
@@ -22,7 +24,7 @@ function main(gameState, side) {
           {
             possibleMoves.push('south');
           }
-          if (col > 1 && boardLayout[row][col - 1] > 1)
+          if (col > 0 && boardLayout[row][col - 1] > 1)
           {
             possibleMoves.push('west');
           }
@@ -61,8 +63,8 @@ function main(gameState, side) {
         return moveSet;
       }, [])
     );
+
     callback();
-    // we are returning a timeout here to test limiting execution time on the sandbox side.
   })
 }
 `;
