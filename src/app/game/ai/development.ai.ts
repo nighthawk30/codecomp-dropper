@@ -48,9 +48,7 @@ export type Coord = [number, number];
 */
 
 // do not include "export const developmentScript = " with your submission
-export const developmentScript = 
-
-`
+export const developmentScript = `
 //global variables
 let turn = -1;
 
@@ -62,10 +60,6 @@ function main(gameState, side)
   const boardLayout[][] = gameState.tileStates;
   const possibleMoves = [];
   turn++;
-
-  //board value
-  let board = [];
-  for (let i = 0; i < )
 
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
@@ -101,11 +95,13 @@ function main(gameState, side)
       }, [])
     );
 
-    
+
     return callback();    
     })
 }
-`;
+
+
+`;//NO TOUCH THIS LINE
 
 
 /*`
