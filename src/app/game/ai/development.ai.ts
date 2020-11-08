@@ -183,38 +183,38 @@ function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
     if (tileValue[rpos + 1][cpos] === -9 || tileValue[rpos + 1][cpos] > tileValue[rpos][cpos] + 1)
     {
       tileValue[rpos + 1][cpos] = tileValue[rpos][cpos] + 1;
+      valueRecursion(rpos + 1, cpos, rowSize, colSize, boardLayout, tileValue);
     }
-    valueRecursion(rpos + 1, cpos, rowSize, colSize, boardLayout, tileValue);
   }
   if (locationExists(rpos - 1, cpos, rowSize, colSize, boardLayout))
   {
     if (tileValue[rpos - 1][cpos] === -9 || tileValue[rpos - 1][cpos] > tileValue[rpos][cpos] + 1)
     {
       tileValue[rpos - 1][cpos] = tileValue[rpos][cpos] + 1;
+      valueRecursion(rpos - 1, cpos, rowSize, colSize, boardLayout, tileValue);
     }
-    valueRecursion(rpos - 1, cpos, rowSize, colSize, boardLayout, tileValue);
   }
   if (locationExists(rpos, cpos + 1, rowSize, colSize, boardLayout))
   {
     if (tileValue[rpos][cpos + 1] === -9 || tileValue[rpos][cpos + 1] > tileValue[rpos][cpos] + 1)
     {
       tileValue[rpos][cpos + 1] = tileValue[rpos][cpos] + 1;
+      valueRecursion(rpos, cpos + 1, rowSize, colSize, boardLayout, tileValue);
     }
-    valueRecursion(rpos, cpos + 1, rowSize, colSize, boardLayout, tileValue);
   }
   if (locationExists(rpos, cpos - 1, rowSize, colSize, boardLayout))
   {
     if (tileValue[rpos][cpos - 1] === -9 || tileValue[rpos][cpos - 1] > tileValue[rpos][cpos] + 1)
     {
       tileValue[rpos][cpos - 1] = tileValue[rpos][cpos] + 1;
-    }
-    valueRecursion(rpos, cpos - 1, rowSize, colSize, boardLayout, tileValue);
+      valueRecursion(rpos, cpos - 1, rowSize, colSize, boardLayout, tileValue);
+    } 
   }
 }
 
 function locationExists(rpos, cpos, rowSize, colSize, boardLayout)
 {
-  if (rpos > 0 && rpos < rowSize && cpos > 0 && cpos < colSize && boardLayout[rpos][cpos] > 1)
+  if (rpos >= 0 && rpos < rowSize && cpos >= 0 && cpos < colSize && boardLayout[rpos][cpos] > 1)
   {
     return true;
   }
