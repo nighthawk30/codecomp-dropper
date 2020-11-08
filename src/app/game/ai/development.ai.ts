@@ -78,19 +78,21 @@ function main(gameState, side)
     }
   }
 
+
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
+  let midRow = Math.trunc(rowSize / 2);
   for (let j = 0; j < colSize; j++)
   {
-    if (boardLayout[rowSize / 2][j] != 0)
+    if (boardLayout[midRow][j] !== 0)
     {
-      tileValue[rowSize / 2][j] = 0;//make center row most valuable
+      tileValue[midRow][j] = 0;//make center row most valuable
     }
   }
 
   //start at middle, recusrion for value propagation
   for (let j = colSize; j < rowSize; j++)
   {
-    valueRecursion(rowSize / 2, j, rowSize, colSize, boardLayout, tileValue);
+    valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
   }
 
   return new Promise((resolve, reject) => {
@@ -111,23 +113,24 @@ function main(gameState, side)
           let x = -9; //here
           let minValue = -9;
           let direction = 'none';
-          //set the value of each move
+
+          //Can you move in each direction and is that the best move
           if (locationExists(row + 1, col, rowSize, colSize, boardLayout)) 
           {
-            n = tileValue[row - 1][col]; //north
+            s = tileValue[row + 1][col]; //south
             if (minValue === -9 || (n !== -9 && n < minValue))
             {
-              minValue = n;
-              direction = 'north';
+              minValue = s;
+              direction = 'south';
             }
           }
           if (locationExists(row - 1, col, rowSize, colSize, boardLayout)) 
           {
-            s = tileValue[row + 1][col];
+            n = tileValue[row - 1][col];
             if (minValue === -9 || (s !== -9 && s < minValue))
             {
-              minValue = s;
-              direction = 'south';
+              minValue = n;
+              direction = 'north';
             }
           }
           if (locationExists(row, col - 1, rowSize, colSize, boardLayout)) 
@@ -157,7 +160,7 @@ function main(gameState, side)
               direction = 'none';
             }
           }
-          
+
           //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
           moveSet.push(direction);
           possibleMoves.length = 0;

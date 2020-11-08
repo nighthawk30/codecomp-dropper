@@ -49,7 +49,9 @@ function main(gameState, side) {
       myTeam.reduce((moveSet, member, i) => {
         if (member.isDead) {
           moveSet.push('none');
-        } else {
+        }
+        else
+        {
           const [row, col] = curMoves[i];
           // console.log('premove', row, col);
           
