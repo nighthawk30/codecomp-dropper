@@ -27,7 +27,6 @@ function main(gameState, side)
     }
   }
 
-
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
   let midRow = Math.trunc(rowSize / 2);
   for (let j = 0; j < colSize; j++)
@@ -44,6 +43,7 @@ function main(gameState, side)
     valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
   }
 
+  let player = 0;//keeps track of which player is getting updated so different players can do different things
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
       myTeam.reduce((moveSet, member) => {
@@ -119,6 +119,7 @@ function main(gameState, side)
           //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
           moveSet.push(direction);
           tileValue[move[0]][move[1]]--;
+          player++;
         }
         return moveSet;
       }, [])
@@ -127,6 +128,12 @@ function main(gameState, side)
     // we are returning a timeout here to test limiting execution time on the sandbox side.
     return callback();
   })
+}
+
+//has the board been partitioned
+function boardSegmented(boardLayout)
+{
+  return true;
 }
 
 function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
