@@ -23,10 +23,7 @@ function main(gameState, side) {
     );
 
     // we are returning a timeout here to test limiting execution time on the sandbox side.
-    return setTimeout(
-      callback
-    , 100); // test timeout of player script for limiting execution time.
-
-    })
+    return setTimeout(callback, 100); // test timeout of player script for limiting execution time.
+  })
 }
 `;
