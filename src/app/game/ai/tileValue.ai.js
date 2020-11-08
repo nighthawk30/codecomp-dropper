@@ -1,5 +1,6 @@
 //global variables
 let turn = -1;
+let midRow = Math.trunc(rowSize / 2);//Most valuable row - UPDATE: this won't be used to determine tile value in final version
 
 function main(gameState, side)
 {
@@ -27,8 +28,13 @@ function main(gameState, side)
     }
   }
 
+  
+  
+  if (boardSegmented(midRow))//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+  {
+    midRow--;
+  }
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
-  let midRow = Math.trunc(rowSize / 2);
   for (let j = 0; j < colSize; j++)
   {
     if (boardLayout[midRow][j] !== 0)
@@ -130,12 +136,21 @@ function main(gameState, side)
   })
 }
 
-//has the board been partitioned
-function boardSegmented(boardLayout)
+//UPDATE: change it so that it checks if there is a valid path from 1 side of the board to another
+//can be done by creating a value array and checking if there are spaces that weren't updated
+function boardSegmented(boardLayout, midRow)
 {
+  for (let j = 0; j < colSize; j++)//checks if middle row is blocked out
+  {
+    if (boardLayout[midRow][j] > 1)
+    {
+      return false;//middle is not blocked out
+    }
+  }
   return true;
 }
 
+//UPDATE: please do this dynamically
 function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
 {
   //check if there are
