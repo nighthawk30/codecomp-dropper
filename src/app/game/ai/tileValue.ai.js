@@ -84,14 +84,7 @@ function main(gameState, side)
             if (minValue === -9 || (n !== -9 && n < minValue))
             {
               minValue = s;
-              if (side === 'home')//depends which side you're on
-              {
-                direction = 'south';
-              }
-              else
-              {
-                direction = 'north';
-              }
+              direction = 'south';
               move = [row + 1, col];
             }
           }
@@ -101,14 +94,7 @@ function main(gameState, side)
             if (minValue === -9 || (s !== -9 && s < minValue))
             {
               minValue = n;
-              if (side === 'home')//depends which side you're on
-              {
-                direction = 'north';
-              }
-              else
-              {
-                direction = 'south';
-              }
+              direction = 'north';
               move = [row - 1, col];
             }
           }
