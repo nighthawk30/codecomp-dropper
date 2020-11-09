@@ -29,12 +29,12 @@ function main(gameState, side)
     }
   }
 
-  /*
-  if (boardSegmented(boardLayout, midRow) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+
+  if (boardSegmented(boardLayout, midRow) && midRow > 0 && false)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
   {
     midRow--;
   }
-  */
+
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
   for (let j = 0; j < colSize; j++)
   {
@@ -143,10 +143,12 @@ function boardSegmented(boardLayout, midRow)
 {
   for (let j = 0; j < colSize; j++)//checks if middle row is blocked out
   {
+    /*
     if (boardLayout[midRow][j] > 1)
     {
       return false;//middle is not blocked out
     }
+    */
   }
   return true;
 }
