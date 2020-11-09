@@ -29,10 +29,16 @@ function main(gameState, side)
     }
   }
 
-
-  if (boardSegmented(boardLayout, midRow) && midRow > 0 && false)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+  if (boardSegmented(boardLayout, midRow, colSize) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
   {
-    midRow--;
+    if (side === 'home')//depends which side you're on
+    {
+      midRow--;
+    }
+    else
+    {
+      midRow++;
+    }
   }
 
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
@@ -78,7 +84,14 @@ function main(gameState, side)
             if (minValue === -9 || (n !== -9 && n < minValue))
             {
               minValue = s;
-              direction = 'south';
+              if (side === 'home')//depends which side you're on
+              {
+                direction = 'south';
+              }
+              else
+              {
+                direction = 'north';
+              }
               move = [row + 1, col];
             }
           }
@@ -88,7 +101,14 @@ function main(gameState, side)
             if (minValue === -9 || (s !== -9 && s < minValue))
             {
               minValue = n;
-              direction = 'north';
+              if (side === 'home')//depends which side you're on
+              {
+                direction = 'north';
+              }
+              else
+              {
+                direction = 'south';
+              }
               move = [row - 1, col];
             }
           }
@@ -139,16 +159,14 @@ function main(gameState, side)
 
 //UPDATE: change it so that it checks if there is a valid path from 1 side of the board to another
 //can be done by creating a value array and checking if there are spaces that weren't updated
-function boardSegmented(boardLayout, midRow)
+function boardSegmented(boardLayout, midRow, colSize)
 {
   for (let j = 0; j < colSize; j++)//checks if middle row is blocked out
   {
-    /*
     if (boardLayout[midRow][j] > 1)
     {
       return false;//middle is not blocked out
     }
-    */
   }
   return true;
 }
