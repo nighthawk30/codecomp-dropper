@@ -51,6 +51,7 @@ export type Coord = [number, number];
 export const developmentScript = `
 //global variables
 let turn = -1;
+let midRow = 0;//can't do stuff in global
 
 function main(gameState, side)
 {
@@ -59,6 +60,7 @@ function main(gameState, side)
   const [rowSize, colSize] = gameState.boardSize;
   const boardLayout = gameState.tileStates;//the strength of every tile on the board
   let tileValue = [];//hopefully it works with pass by reference
+  midRow = Math.trunc(rowSize / 2);//Most valuable row - UPDATE: this won't be used to determine tile value in final version
   const possibleMoves = [];
   turn++;
 
@@ -78,9 +80,19 @@ function main(gameState, side)
     }
   }
 
+  if (boardSegmented(boardLayout, midRow, colSize) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+  {
+    if (side === 'home')//depends which side you're on
+    {
+      midRow--;
+    }
+    else
+    {
+      midRow++;
+    }
+  }
 
   //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
-  let midRow = Math.trunc(rowSize / 2);
   for (let j = 0; j < colSize; j++)
   {
     if (boardLayout[midRow][j] !== 0)
@@ -95,6 +107,7 @@ function main(gameState, side)
     valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
   }
 
+  let player = 0;//keeps track of which player is getting updated so different players can do different things
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
       myTeam.reduce((moveSet, member) => {
@@ -170,6 +183,7 @@ function main(gameState, side)
           //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
           moveSet.push(direction);
           tileValue[move[0]][move[1]]--;
+          player++;
         }
         return moveSet;
       }, [])
@@ -180,6 +194,21 @@ function main(gameState, side)
   })
 }
 
+//UPDATE: change it so that it checks if there is a valid path from 1 side of the board to another
+//can be done by creating a value array and checking if there are spaces that weren't updated
+function boardSegmented(boardLayout, midRow, colSize)
+{
+  for (let j = 0; j < colSize; j++)//checks if middle row is blocked out
+  {
+    if (boardLayout[midRow][j] > 1)
+    {
+      return false;//middle is not blocked out
+    }
+  }
+  return true;
+}
+
+//UPDATE: please do this dynamically
 function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
 {
   //check if there are
@@ -230,4 +259,4 @@ function locationExists(rpos, cpos, rowSize, colSize, boardLayout)
   }
 }
 
-`;//NO TOUCH THIS LINE
+`;//NO TOUCH
