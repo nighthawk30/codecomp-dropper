@@ -132,7 +132,7 @@ function main(gameState, side)
           if (locationExists(row + 1, col, rowSize, colSize, boardLayout)) 
           {
             s = tileValue[row + 1][col]; //south
-            if (minValue === -9 || (n !== -9 && n < minValue))
+            if (minValue === -9 || (s !== -9 && s < minValue))
             {
               minValue = s;
               direction = 'south';
@@ -142,7 +142,7 @@ function main(gameState, side)
           if (locationExists(row - 1, col, rowSize, colSize, boardLayout)) 
           {
             n = tileValue[row - 1][col];
-            if (minValue === -9 || (s !== -9 && s < minValue))
+            if (minValue === -9 || (n !== -9 && n < minValue))
             {
               minValue = n;
               direction = 'north';
