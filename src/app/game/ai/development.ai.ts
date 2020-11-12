@@ -53,6 +53,7 @@ export const developmentScript = `
 let turn = -1;
 let objectives = 0;
 let midRow = 0;
+let teamAlive = 3;
 
 function main(gameState, side)
 {
@@ -80,6 +81,7 @@ function main(gameState, side)
   }
   let upperValue = tileValue;
   let lowerValue = tileValue;
+  let stayingaliveValue = tileValue;
 
   //objective based code
   if (objectives === 0)//destroy middle tiles
@@ -138,6 +140,12 @@ function main(gameState, side)
     }
   }
 
+  if (teamAlive === 1)//last player standing
+  {
+    //move to tile with most open spaces, don't block yourself in, etc...
+    //stayingaliveValue
+  }
+
   let player = 0;//keeps track of which player is getting updated so different players can do different things
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
@@ -157,6 +165,7 @@ function main(gameState, side)
           let x = -9; //here
           let minValue = -9;
           let direction = 'none';
+          let dead = true;//triggers if there are no viable moves
           let move = [row, col];
 
           //Can you move in each direction and is that the best move
@@ -168,6 +177,7 @@ function main(gameState, side)
               minValue = s;
               direction = 'south';
               move = [row + 1, col];
+              dead = false;
             }
           }
           if (locationExists(row - 1, col, rowSize, colSize, boardLayout)) 
@@ -178,6 +188,7 @@ function main(gameState, side)
               minValue = n;
               direction = 'north';
               move = [row - 1, col];
+              dead = false;
             }
           }
           if (locationExists(row, col - 1, rowSize, colSize, boardLayout)) 
@@ -188,6 +199,7 @@ function main(gameState, side)
               minValue = w;
               direction = 'west';
               move = [row, col - 1];
+              dead = false;
             }  
           }
           if (locationExists(row, col + 1, rowSize, colSize, boardLayout)) 
@@ -198,6 +210,7 @@ function main(gameState, side)
               minValue = e;
               direction = 'east';
               move = [row, col + 1];
+              dead = false;
             }
           }
           if (locationExists(row, col, rowSize, colSize, boardLayout))
@@ -208,10 +221,14 @@ function main(gameState, side)
               minValue = x;
               direction = 'none';
               move = [row, col];
+              dead = false;
             }
           }
 
-          //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
+          if (dead)//keep track of monsters alive to make sure - UPDATE: keep track of which monsters are alive/dead (array)
+          {
+            teamAlive--;
+          }
           moveSet.push(direction);
           tileValue[move[0]][move[1]]--;//update to subtract from whichever value it pulls from
           player++;
@@ -227,11 +244,11 @@ function main(gameState, side)
 //value of a tile for a monster with a given objective
 function objectiveValue(row, col, player, tileValue, lowerValue, upperValue)
 {
-  if (objectives === 0)
+  if (objectives === 0)//board segment
   {
     return tileValue[row][col];
   }
-  else if (objectives === 1)
+  else if (objectives === 1)// move to sides of the board
   {
     if (player === 0)
     {
@@ -245,6 +262,10 @@ function objectiveValue(row, col, player, tileValue, lowerValue, upperValue)
     {
       return lowerValue[row][col];
     }
+  }
+  else if (objectives === 2)//last one standing (aka survive)
+  {
+    return stayingaliveValue[row][col];
   }
 }
 
@@ -312,5 +333,4 @@ function locationExists(rpos, cpos, rowSize, colSize, boardLayout)
     return false;
   }
 }
-
 `;//NO TOUCH
