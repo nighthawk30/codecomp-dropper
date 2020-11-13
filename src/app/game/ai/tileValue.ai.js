@@ -1,6 +1,8 @@
 //global variables
 let turn = -1;
-let midRow = 0;//can't do stuff in global
+let objectives = 0;
+let midRow = 0;
+let teamAlive = 3;
 
 function main(gameState, side)
 {
@@ -10,15 +12,13 @@ function main(gameState, side)
   const boardLayout = gameState.tileStates;//the strength of every tile on the board
   let tileValue = [];//hopefully it works with pass by reference
   midRow = Math.trunc(rowSize / 2);//Most valuable row - UPDATE: this won't be used to determine tile value in final version
-  const possibleMoves = [];
   turn++;
 
-  //initial stuff
+  //initial stuff and turn based code
   if (turn === 0)
   {
 
   }
-
   //Build Tile Value board
   for(let i = 0; i < rowSize; i++)
   {
@@ -28,32 +28,71 @@ function main(gameState, side)
       tileValue[i].push(-9);//-9 means it has not been updated
     }
   }
+  let upperValue = tileValue;
+  let lowerValue = tileValue;
+  let stayingaliveValue = tileValue;
 
-  if (boardSegmented(boardLayout, midRow, colSize) && midRow > 0)//If the middle row has been destroyed, destroy the next row up, or something - UPDATE
+  //objective based code
+  if (objectives === 0)//destroy middle tiles
   {
-    if (side === 'home')//depends which side you're on
+    if (boardSegmented(boardLayout, midRow, colSize))
     {
-      midRow--;
+      objectives++;
     }
-    else
+    else//objective not met
     {
-      midRow++;
+      //Build Tile Value board
+      for(let i = 0; i < rowSize; i++)
+      {
+        //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
+        for (let j = 0; j < colSize; j++)
+        {
+          if (boardLayout[midRow][j] !== 0)
+          {
+            tileValue[midRow][j] = 0;//make center row most valuable
+          }
+        }
+        //start at most valuable tiles, recusrion for value propagation
+        for (let j = 0; j < colSize; j++)
+        {
+          valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
+        }
+      }
     }
   }
 
-  //Find the tile value: 0 = High, 1+ = Lower, -1 = empty
-  for (let j = 0; j < colSize; j++)
+  if (objectives === 1)//board center has been destroyed - multiple value functions
   {
-    if (boardLayout[midRow][j] !== 0)
+    //UPPER SECTION
+    for (let j = 0; j < colSize; j++)
     {
-      tileValue[midRow][j] = 0;//make center row most valuable
+      if (boardLayout[midRow][j] !== 0)
+      {
+        upperValue[0][j] = 0;
+      }
+    }
+    for (let j = 0; j < colSize; j++)
+    {
+      valueRecursion(0, j, rowSize, colSize, boardLayout, upperValue);
+    }
+    //LOWER SECTION
+    for (let j = 0; j < colSize; j++)
+    {
+      if (boardLayout[midRow][j] !== 0)
+      {
+        lowerValue[rowSize - 1][j] = 0;
+      }
+    }
+    for (let j = 0; j < colSize; j++)
+    {
+      valueRecursion(rowSize - 1, j, rowSize, colSize, boardLayout, lowerValue);
     }
   }
 
-  //start at middle, recusrion for value propagation
-  for (let j = 0; j < colSize; j++)
+  if (teamAlive === 1)//last player standing
   {
-    valueRecursion(midRow, j, rowSize, colSize, boardLayout, tileValue);
+    //move to tile with most open spaces, don't block yourself in, etc...
+    //stayingaliveValue
   }
 
   let player = 0;//keeps track of which player is getting updated so different players can do different things
@@ -75,72 +114,108 @@ function main(gameState, side)
           let x = -9; //here
           let minValue = -9;
           let direction = 'none';
+          let dead = true;//triggers if there are no viable moves
           let move = [row, col];
 
           //Can you move in each direction and is that the best move
           if (locationExists(row + 1, col, rowSize, colSize, boardLayout)) 
           {
-            s = tileValue[row + 1][col]; //south
-            if (minValue === -9 || (n !== -9 && n < minValue))
+            s = objectiveValue(row + 1, col, player, tileValue, lowerValue, upperValue)//south
+            if (minValue === -9 || (s !== -9 && s < minValue))
             {
               minValue = s;
               direction = 'south';
               move = [row + 1, col];
+              dead = false;
             }
           }
           if (locationExists(row - 1, col, rowSize, colSize, boardLayout)) 
           {
-            n = tileValue[row - 1][col];
-            if (minValue === -9 || (s !== -9 && s < minValue))
+            n = objectiveValue(row - 1, col, player, tileValue, lowerValue, upperValue)//north
+            if (minValue === -9 || (n !== -9 && n < minValue))
             {
               minValue = n;
               direction = 'north';
               move = [row - 1, col];
+              dead = false;
             }
           }
           if (locationExists(row, col - 1, rowSize, colSize, boardLayout)) 
           {
-            w = tileValue[row][col - 1];
+            w = objectiveValue(row, col - 1, player, tileValue, lowerValue, upperValue)//west
             if (minValue === -9 || (w !== -9 && w < minValue))
             {
               minValue = w;
               direction = 'west';
               move = [row, col - 1];
+              dead = false;
             }  
           }
           if (locationExists(row, col + 1, rowSize, colSize, boardLayout)) 
           {
-            e = tileValue[row][col + 1];
+            e = objectiveValue(row, col + 1, player, tileValue, lowerValue, upperValue)//east
             if (minValue === -9 || (e !== -9 && e < minValue))
             {
               minValue = e;
               direction = 'east';
               move = [row, col + 1];
+              dead = false;
             }
           }
           if (locationExists(row, col, rowSize, colSize, boardLayout))
           {
-            x = tileValue[row][col];
+            x = objectiveValue(row, col, player, tileValue, lowerValue, upperValue)//here
             if (minValue === -9 || (x !== -9 && x < minValue))
             {
               minValue = x;
               direction = 'none';
               move = [row, col];
+              dead = false;
             }
           }
 
-          //SUBTRACT OFF COMPLETED MOVE FROM TILE STRENGTH SO THE NEXT MONSTER TAKES IT INTO ACCOUNT
+          if (dead)//keep track of monsters alive to make sure - UPDATE: keep track of which monsters are alive/dead (array)
+          {
+            teamAlive--;
+          }
           moveSet.push(direction);
-          tileValue[move[0]][move[1]]--;
+          tileValue[move[0]][move[1]]--;//update to subtract from whichever value it pulls from
           player++;
         }
         return moveSet;
       }, [])
     );
 
-    // we are returning a timeout here to test limiting execution time on the sandbox side.
     return callback();
   })
+}
+
+//value of a tile for a monster with a given objective
+function objectiveValue(row, col, player, tileValue, lowerValue, upperValue)
+{
+  if (objectives === 0)//board segment
+  {
+    return tileValue[row][col];
+  }
+  else if (objectives === 1)// move to sides of the board
+  {
+    if (player === 0)
+    {
+      return upperValue[row][col];
+    }
+    if (player === 1)
+    {
+      return upperValue[row][col];
+    }
+    if (player === 2)
+    {
+      return lowerValue[row][col];
+    }
+  }
+  else if (objectives === 2)//last one standing (aka survive)
+  {
+    return stayingaliveValue[row][col];
+  }
 }
 
 //UPDATE: change it so that it checks if there is a valid path from 1 side of the board to another
@@ -157,7 +232,7 @@ function boardSegmented(boardLayout, midRow, colSize)
   return true;
 }
 
-//UPDATE: please do this dynamically
+//recursively find the value of all tiles - start it at the most valuble tiles
 function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
 {
   //check if there are
