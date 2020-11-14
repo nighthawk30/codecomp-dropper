@@ -4,7 +4,6 @@ function main(gameState, side)
   const [rowSize, colSize] = gameState.boardSize;
   let boardLayout = gameState.tileStates;//the strength of every tile on the board
 
-
   return new Promise((resolve, reject) => {
     const callback = () => resolve(
       myTeam.reduce((moveSet, member) => {
@@ -14,7 +13,7 @@ function main(gameState, side)
         }
         else 
         {
-          const [row, col] = member.coord;
+          const [rpos, cpos] = member.coord;
           let direction = 'none';
           let bestMove = 0;
           let n = 0;
@@ -73,19 +72,19 @@ function main(gameState, side)
           switch(move)
           {
             case 'north':
-              boardLayout[row - 1][col]--;
+              boardLayout[rpos - 1][cpos]--;
               break;
             case 'south':
-              boardLayout[row + 1][col]--;
+              boardLayout[rpos + 1][cpos]--;
               break;
             case 'west':
-              boardLayout[row][col - 1]--;
+              boardLayout[rpos][cpos - 1]--;
               break;
             case 'east':
-              boardLayout[row][col + 1]--;
+              boardLayout[rpos][cpos + 1]--;
               break;
             case 'none':
-              boardLayout[row][col]--;
+              boardLayout[rpos][cpos]--;
               break;
           }
           moveSet.push(move);
@@ -150,6 +149,7 @@ function countSpaces(rpos, cpos, rowSize, colSize, boardLayout)
       tileValue[i].push(0);//0 means it has not been visited
     }
   }
+  valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
   //Count tiles with 1
   for (let i = 0; i < rowSize; i++)
   {
