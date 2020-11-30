@@ -100,39 +100,42 @@ function main(gameState, side)
 //recursively find the value of all tiles - start it at the most valuble tiles
 function valueRecursion(rpos, cpos, rowSize, colSize, boardLayout, tileValue)
 {
-  //check if there are
-  //for all surrounding tiles, if they are on the board
-  if (locationExists(rpos + 1, cpos, rowSize, colSize, boardLayout))
+  if (locationExists(rpos, cpos, rowSize, colSize, boardLayout))
   {
-    if (tileValue[rpos + 1][cpos] === 0)
+    //check if there are
+    //for all surrounding tiles, if they are on the board
+    if (locationExists(rpos + 1, cpos, rowSize, colSize, boardLayout))
     {
-      tileValue[rpos + 1][cpos] = 1;
-      valueRecursion(rpos + 1, cpos, rowSize, colSize, boardLayout, tileValue);
+      if (tileValue[rpos + 1][cpos] === 0)
+      {
+        tileValue[rpos + 1][cpos] = 1;
+        valueRecursion(rpos + 1, cpos, rowSize, colSize, boardLayout, tileValue);
+      }
     }
-  }
-  if (locationExists(rpos - 1, cpos, rowSize, colSize, boardLayout))
-  {
-    if (tileValue[rpos - 1][cpos] === 0)
+    if (locationExists(rpos - 1, cpos, rowSize, colSize, boardLayout))
     {
-      tileValue[rpos - 1][cpos] = 1;
-      valueRecursion(rpos - 1, cpos, rowSize, colSize, boardLayout, tileValue);
+      if (tileValue[rpos - 1][cpos] === 0)
+      {
+        tileValue[rpos - 1][cpos] = 1;
+        valueRecursion(rpos - 1, cpos, rowSize, colSize, boardLayout, tileValue);
+      }
     }
-  }
-  if (locationExists(rpos, cpos + 1, rowSize, colSize, boardLayout))
-  {
-    if (tileValue[rpos][cpos + 1] === 0)
+    if (locationExists(rpos, cpos + 1, rowSize, colSize, boardLayout))
     {
-      tileValue[rpos][cpos + 1] = 1;
-      valueRecursion(rpos, cpos + 1, rowSize, colSize, boardLayout, tileValue);
+      if (tileValue[rpos][cpos + 1] === 0)
+      {
+        tileValue[rpos][cpos + 1] = 1;
+        valueRecursion(rpos, cpos + 1, rowSize, colSize, boardLayout, tileValue);
+      }
     }
-  }
-  if (locationExists(rpos, cpos - 1, rowSize, colSize, boardLayout))
-  {
-    if (tileValue[rpos][cpos - 1] === 0)
+    if (locationExists(rpos, cpos - 1, rowSize, colSize, boardLayout))
     {
-      tileValue[rpos][cpos - 1] = 1;
-      valueRecursion(rpos, cpos - 1, rowSize, colSize, boardLayout, tileValue);
-    } 
+      if (tileValue[rpos][cpos - 1] === 0)
+      {
+        tileValue[rpos][cpos - 1] = 1;
+        valueRecursion(rpos, cpos - 1, rowSize, colSize, boardLayout, tileValue);
+      } 
+    }
   }
 }
 
